@@ -4,14 +4,6 @@
 ```
 -- 0 : iSCSI 설치
 
-- account
-devNats
-password10040314
-
-- base64
-ZGV2TmF0cw==
-YmVtaWx5MTAwNDAzMTQ=
-
 - iSCSI
 dev-nats-01
 dev-nats-02
@@ -45,9 +37,9 @@ kubectl create namespace messanger-nats
 - setting
 sudo iscsiadm -m discovery -t st -p 127.0.0.1
 
-sudo iscsiadm -m node -T iqn.2000-01.com.synology:dev-nats-01 -p 127.0.0.1 --o update --name node.session.auth.authmethod --value CHAP --name node.session.auth.username --value devNats --name node.session.auth.password --value password10040314
-sudo iscsiadm -m node -T iqn.2000-01.com.synology:dev-nats-02 -p 127.0.0.1 --o update --name node.session.auth.authmethod --value CHAP --name node.session.auth.username --value devNats --name node.session.auth.password --value password10040314
-sudo iscsiadm -m node -T iqn.2000-01.com.synology:dev-nats-03 -p 127.0.0.1 --o update --name node.session.auth.authmethod --value CHAP --name node.session.auth.username --value devNats --name node.session.auth.password --value password10040314
+sudo iscsiadm -m node -T iqn.2000-01.com.synology:dev-nats-01 -p 127.0.0.1 --o update --name node.session.auth.authmethod --value CHAP --name node.session.auth.username --value devNats --name node.session.auth.password --value password1234
+sudo iscsiadm -m node -T iqn.2000-01.com.synology:dev-nats-02 -p 127.0.0.1 --o update --name node.session.auth.authmethod --value CHAP --name node.session.auth.username --value devNats --name node.session.auth.password --value password1234
+sudo iscsiadm -m node -T iqn.2000-01.com.synology:dev-nats-03 -p 127.0.0.1 --o update --name node.session.auth.authmethod --value CHAP --name node.session.auth.username --value devNats --name node.session.auth.password --value password1234
 
 - login
 sudo iscsiadm -m node -T iqn.2000-01.com.synology:dev-nats-01 -p 127.0.0.1 --login
@@ -74,10 +66,10 @@ kubectl apply -f nats-pv.yaml
 
 -- 5 : nats 설치(with helm)
 
-helm install dev-benily-nats -f values.yaml . --namespace messanger-nats
+helm install dev-nats -f values.yaml . --namespace messanger-nats
 
 - helm 설정 정보
-helm status dev-benily-nats --namespace messanger-nats
+helm status dev-nats --namespace messanger-nats
 
 
 - 로컬에서 접속
@@ -89,16 +81,11 @@ helm status dev-benily-nats --namespace messanger-nats
   nats-box:~# nc dev-nats 4222
 
 
-- NodePort IP/Port 얻기
-kubectl get nodes --namespace messanger-nats -o jsonpath="{.items[0].status.addresses[0].address}"
-
-kubectl get --namespace messanger-nats -o jsonpath="{.spec.ports[0].nodePort}" services bai-db-postgresql-postgresql-ha-pgpool
-
 - 외부에서 접근
-192.168.0.61:30030
+127.0.0.1:30030
 
 - metrics 정보 얻기
-curl 192.168.0.60:30033/metrics
+curl 127.0.0.1:30033/metrics
 
 - 서비스 확인
 kubectl get all --namespace messanger-nats
